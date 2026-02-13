@@ -1,1 +1,40 @@
-job
+jobs:
+  build:
+
+    runs-on: windows-latest   # alternate runner OS is: ubuntu-latest
+
+    steps:
+    - name: Install Power Platform Tools
+      uses: microsoft/powerplatform-actions/actions-install@v1
+
+    - name: Export Solution
+      uses: microsoft/powerplatform-actions/export-solution@v1
+      with:
+        environment-url: 'https://myenv.crm.dynamics.com'
+        user-name: 'me@myenv.onmicrosoft.com'
+        password-secret: ${{ secrets.NOA_PP_SECRET }}
+        solution-name: NOA.ReusableComponents.Solution
+        solution-output-file: 'NOA.ReusableComponents.Solution.zip'
+        working-directory: 'out'
+
+    - name: Unpack Solution
+      uses: microsoft/powerplatform-actions/unpack-solution@v1
+      with:
+        solution-file: 'out/NOAReusableComponentsSolution.zip'
+        solution-folder: 'out/solutions/NOAReusableComponentsSolution'
+        solution-type: 'Unmanaged'
+        overwrite-files: true
+
+    - name: Publish Solution
+      uses: microsoft/powerplatform-actions/publish-solution@v1
+      with:
+        environment-url: 'https://myenv.crm.dynamics.com'
+        user-name: 'me@myenv.onmicrosoft.com'
+        password-secret: ${{ secrets.NOA_PP_SECRET }}
+
+    - name: Prepare solution changes for check-in into source control
+      uses: microsoft/powerplatform-actions/branch-solution@v1
+      with:
+        solution-folder: 'out/solutions/NOAReusableComponentsSolution'
+        solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
+        token: ${{ secrets.GITHUB_TOKEN }}
