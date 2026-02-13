@@ -10,8 +10,8 @@ jobs:
     - name: Export Solution
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
-        environment-url: 'https://myenv.crm.dynamics.com'
-        user-name: 'me@myenv.onmicrosoft.com'
+        environment-url: 'https://org82c8d52d.crm.dynamics.com'
+        user-name: 'GECSPAdmin@arcadis.com'
         password-secret: ${{ secrets.NOA_PP_SECRET }}
         solution-name: NOA.ReusableComponents.Solution
         solution-output-file: 'NOA.ReusableComponents.Solution.zip'
@@ -28,8 +28,8 @@ jobs:
     - name: Publish Solution
       uses: microsoft/powerplatform-actions/publish-solution@v1
       with:
-        environment-url: 'https://myenv.crm.dynamics.com'
-        user-name: 'me@myenv.onmicrosoft.com'
+        environment-url: 'https://org82c8d52d.crm.dynamics.com'
+        user-name: 'GECSPAdmin@arcadis.com'
         password-secret: ${{ secrets.NOA_PP_SECRET }}
 
     - name: Prepare solution changes for check-in into source control
