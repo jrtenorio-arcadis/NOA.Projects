@@ -7,22 +7,28 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted  # Windows self-hosted runner 
+    runs-on: self-hosted  # Windows self-hosted runner
 
     steps:
-      # OPTIONAL: Verify NuGet sources for debugging
-      - name: Verify NuGet sources
-        run: C:\Tools\NuGet\nuget.exe sources List
+      # 1. Ensure nuget.config is available to NuGet in TEMP (fixes primarySources error)
+      - name: Copy nuget.config to TEMP
+        run: |
+          copy "$env:APPDATA\NuGet\nuget.config" "C:\WINDOWS\TEMP\nuget.config"
 
-      # OPTIONAL: Install Power Platform CLI via npm if NuGet fails
+      # 2. OPTIONAL: Add nuget.org source explicitly in TEMP in case copy fails
+      - name: Add nuget.org source in TEMP
+        run: |
+          C:\Tools\NuGet\nuget.exe sources Add -Name nuget.org -Source https://api.nuget.org/v3/index.json -ConfigFile C:\WINDOWS\TEMP\nuget.config
+
+      # 3. OPTIONAL: Install Power Platform CLI via npm as fallback
       # - name: Install Power Platform CLI via npm
       #   run: npm install -g pac
 
-      # Mandatory: Install Power Platform Tools using Microsoft action
+      # 4. Install Power Platform Tools (uses NuGet and CLI)
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # Export Managed Solution
+      # 5. Export Managed Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
@@ -31,9 +37,9 @@ jobs:
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: NOA.ReusableComponents.Solution
           solution-output-file: 'NOA.ReusableComponents.Solution.zip'
-          working-directory: 'C:/Users/Administrator/out'     # Use user directory for permissions
+          working-directory: 'C:/Users/Administrator/out'
 
-      # Unpack Managed Solution (for artifact/archive, not editable source)
+      # 6. Unpack Managed Solution for archival (not editable source)
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
@@ -42,7 +48,7 @@ jobs:
           solution-type: 'Managed'
           overwrite-files: true
 
-      # Publish Solution (optional, unless you are importing/updating)
+      # 7. Publish Solution (optional unless importing/updating)
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
@@ -50,7 +56,7 @@ jobs:
           user-name: 'GECSPAdmin@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
 
-      # Prepare unpacked solution for check-in (archive; managed solutions are not editable)
+      # 8. Prepare unpacked solution artifacts for check-in (managed = archive only)
       - name: Prepare solution changes for check-in into source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
