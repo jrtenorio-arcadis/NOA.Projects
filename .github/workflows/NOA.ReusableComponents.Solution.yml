@@ -27,14 +27,14 @@ jobs:
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: NOA.ReusableComponents.Solution
           solution-output-file: 'NOA.ReusableComponents.Solution.zip'
-          working-directory: 'C:/Users/Administrator/out'
+          working-directory: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out'
 
       # 3. Unpack Managed Solution
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
-          solution-file: 'C:/Users/Administrator/out/NOA.ReusableComponents.Solution.zip'
-          solution-folder: 'C:/Users/Administrator/out/solutions/NOAReusableComponentsSolution'
+          solution-file: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out/NOA.ReusableComponents.Solution.zip'
+          solution-folder: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out/solutions/NOAReusableComponentsSolution'
           solution-type: 'Managed'
           overwrite-files: true
 
@@ -50,6 +50,6 @@ jobs:
       - name: Prepare solution changes for check-in into source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
-          solution-folder: 'C:/Users/Administrator/out/solutions/NOAReusableComponentsSolution'
+          solution-folder: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out/solutions/NOAReusableComponentsSolution'
           solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
           token: ${{ secrets.GITHUB_TOKEN }}
