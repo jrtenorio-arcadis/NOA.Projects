@@ -7,14 +7,18 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted  # Windows runner
+    runs-on: self-hosted
 
     steps:
-      # 1. Install Power Platform CLI via npm (skip NuGet issues)
+      # Install Power Platform CLI via npm (fixes NuGet issues)
       - name: Install Power Platform CLI via npm
         run: npm install -g pac
 
-      # 2. Export Managed Solution
+      # Install Power Platform Tools (sets up environment for actions)
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      # Export Managed Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
