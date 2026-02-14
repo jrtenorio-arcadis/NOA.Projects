@@ -26,9 +26,9 @@ jobs:
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
-          solution-file: 'out/NOAReusableComponentsSolution.zip'
+          solution-file: 'out/NOA.ReusableComponents.Solution.zip'   # Matches export step!
           solution-folder: 'out/solutions/NOAReusableComponentsSolution'
-          solution-type: 'Unmanaged'
+          solution-type: 'Managed'                                  # Managed export!
           overwrite-files: true
 
       - name: Publish Solution
