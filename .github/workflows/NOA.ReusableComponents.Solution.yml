@@ -7,12 +7,22 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted  # alternate runner OS is: ubuntu-latest  
+    runs-on: self-hosted  # Windows self-hosted runner
 
     steps:
+      # OPTIONAL: Verify NuGet sources for debugging
+      - name: Verify NuGet sources
+        run: C:\Tools\NuGet\nuget.exe sources List
+
+      # OPTIONAL: Install Power Platform CLI via npm if NuGet fails
+      # - name: Install Power Platform CLI via npm
+      #   run: npm install -g pac
+
+      # Mandatory: Install Power Platform Tools using Microsoft action
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
+      # Export Managed Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
@@ -21,16 +31,18 @@ jobs:
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: NOA.ReusableComponents.Solution
           solution-output-file: 'NOA.ReusableComponents.Solution.zip'
-          working-directory: 'out'
+          working-directory: 'C:/Users/Administrator/out'     # Use user directory for permissions
 
+      # Unpack Managed Solution (for artifact/archive, not editable source)
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
-          solution-file: 'out/NOA.ReusableComponents.Solution.zip'   # Matches export step!
-          solution-folder: 'out/solutions/NOAReusableComponentsSolution'
-          solution-type: 'Managed'                                  # Managed export!
+          solution-file: 'C:/Users/Administrator/out/NOA.ReusableComponents.Solution.zip'
+          solution-folder: 'C:/Users/Administrator/out/solutions/NOAReusableComponentsSolution'
+          solution-type: 'Managed'
           overwrite-files: true
 
+      # Publish Solution (optional, unless you are importing/updating)
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
@@ -38,9 +50,10 @@ jobs:
           user-name: 'GECSPAdmin@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
 
+      # Prepare unpacked solution for check-in (archive; managed solutions are not editable)
       - name: Prepare solution changes for check-in into source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
-          solution-folder: 'out/solutions/NOAReusableComponentsSolution'
+          solution-folder: 'C:/Users/Administrator/out/solutions/NOAReusableComponentsSolution'
           solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
           token: ${{ secrets.GITHUB_TOKEN }}
