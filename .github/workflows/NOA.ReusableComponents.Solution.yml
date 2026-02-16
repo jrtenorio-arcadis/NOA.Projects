@@ -9,11 +9,19 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # Print runner user (for diagnostics)
+      # Diagnostic: Print runner user
       - name: Print runner user
         run: whoami
 
-      # Check that PAC CLI is available in PATH
+      # Diagnostic: Show PATH as seen by the runner
+      - name: Show PATH
+        run: echo $env:PATH
+
+      # Diagnostic: Show PAC CLI location (where pac)
+      - name: Show PAC CLI location
+        run: where pac
+
+      # Diagnostic: Show PAC CLI version
       - name: Check PAC CLI
         run: pac help
 
