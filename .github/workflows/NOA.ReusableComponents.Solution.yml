@@ -3,7 +3,7 @@ on:
     branches:
       - main
   workflow_dispatch:
- 
+
 jobs:
   build:
     runs-on: self-hosted
@@ -20,11 +20,6 @@ jobs:
       - name: List NuGet sources
         run: C:\Tools\NuGet\nuget.exe sources list
 
-      # Add NuGet source for runner user (idempotent, will error if already exists)
-      - name: Add NuGet Source
-        run: C:\Tools\NuGet\nuget.exe sources add -Name "nuget.org" -Source "https://api.nuget.org/v3/index.json"
-        continue-on-error: true
-
       # Verify write access to TEMP directory
       - name: Test write access to TEMP directory
         run: |
@@ -35,9 +30,20 @@ jobs:
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # Check if PAC CLI was installed
-      - name: Check PAC CLI
+      # List PAC CLI directory (diagnostic)
+      - name: List PAC CLI directory
         run: dir C:\Temp\powerplatform-actions-*\Microsoft.PowerApps.CLI.1.43.6\tools
+
+      # Test PAC CLI execution (diagnostic)
+      - name: Test PAC CLI execution
+        run: |
+          $pacDirs = Get-ChildItem -Directory C:\Temp\powerplatform-actions-* | ForEach-Object { $_.FullName }
+          foreach ($dir in $pacDirs) {
+            $pacPath = Join-Path $dir "Microsoft.PowerApps.CLI.1.43.6\tools\pac.exe"
+            if (Test-Path $pacPath) {
+              & $pacPath --version
+            }
+          }
 
       # Export Solution
       - name: Export Solution
