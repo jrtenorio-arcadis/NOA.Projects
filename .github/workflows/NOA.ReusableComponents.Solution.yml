@@ -41,7 +41,7 @@ jobs:
           foreach ($dir in $pacDirs) {
             $pacPath = Join-Path $dir "Microsoft.PowerApps.CLI.1.43.6\tools\pac.exe"
             if (Test-Path $pacPath) {
-              & $pacPath --version
+              & $pacPath help
             }
           }
 
