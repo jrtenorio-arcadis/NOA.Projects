@@ -25,6 +25,10 @@ jobs:
       - name: Check PAC CLI
         run: pac help
 
+      # Install Power Platform Tools (official step)
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
       # Export Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
