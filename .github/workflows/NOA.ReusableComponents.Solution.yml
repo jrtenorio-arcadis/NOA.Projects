@@ -12,9 +12,28 @@ jobs:
       TMP: C:\Temp
 
     steps:
+      # Print the runner user (for troubleshooting)
+      - name: Print runner user
+        run: whoami
+
+      # List NuGet sources (should show nuget.org)
+      - name: List NuGet sources
+        run: C:\Tools\NuGet\nuget.exe sources list
+
+      # Add NuGet source (idempotent, will error if already exists)
+      - name: Add NuGet Source
+        run: |
+          try {
+            C:\Tools\NuGet\nuget.exe sources add -Name "nuget.org" -Source "https://api.nuget.org/v3/index.json"
+          } catch {
+            Write-Host "NuGet source already exists or another error."
+          }
+
+      # Install Power Platform Tools (Microsoft.PowerApps.CLI)
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
+      # Export Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
@@ -26,6 +45,7 @@ jobs:
           working-directory: 'out'
           solution-type: 'Managed'
 
+      # Unpack Solution
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
@@ -34,6 +54,7 @@ jobs:
           solution-type: 'Managed'
           overwrite-files: true
 
+      # Publish Solution
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
@@ -41,6 +62,7 @@ jobs:
           user-name: 'GECSPAdmin@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
 
+      # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in into source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
