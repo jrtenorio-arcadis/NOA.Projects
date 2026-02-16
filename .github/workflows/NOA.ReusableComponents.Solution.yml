@@ -12,26 +12,32 @@ jobs:
       TMP: C:\Temp
 
     steps:
-      # Print the runner user (for troubleshooting)
+      # Print runner user (for troubleshooting)
       - name: Print runner user
         run: whoami
 
-      # List NuGet sources (should show nuget.org)
+      # List NuGet sources (to confirm feeds)
       - name: List NuGet sources
         run: C:\Tools\NuGet\nuget.exe sources list
 
-      # Add NuGet source (idempotent, will error if already exists)
+      # Add NuGet source for runner user (idempotent, will error if already exists)
       - name: Add NuGet Source
+        run: C:\Tools\NuGet\nuget.exe sources add -Name "nuget.org" -Source "https://api.nuget.org/v3/index.json"
+        continue-on-error: true
+
+      # Verify write access to TEMP directory
+      - name: Test write access to TEMP directory
         run: |
-          try {
-            C:\Tools\NuGet\nuget.exe sources add -Name "nuget.org" -Source "https://api.nuget.org/v3/index.json"
-          } catch {
-            Write-Host "NuGet source already exists or another error."
-          }
+          echo "Power Platform Actions Test" > C:\Temp\testfile.txt
+          dir C:\Temp\testfile.txt
 
       # Install Power Platform Tools (Microsoft.PowerApps.CLI)
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
+
+      # Check if PAC CLI was installed
+      - name: Check PAC CLI
+        run: dir C:\Temp\powerplatform-actions-*\Microsoft.PowerApps.CLI.1.43.6\tools
 
       # Export Solution
       - name: Export Solution
@@ -43,7 +49,7 @@ jobs:
           solution-name: 'NOA.ReusableComponents.Solution'
           solution-output-file: 'NOA.ReusableComponents.Solution.zip'
           working-directory: 'out'
-          solution-type: 'Managed'
+          managed: true
 
       # Unpack Solution
       - name: Unpack Solution
