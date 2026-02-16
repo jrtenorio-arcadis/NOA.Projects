@@ -7,43 +7,15 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    env:
-      TEMP: C:\Temp
-      TMP: C:\Temp
 
     steps:
-      # Print runner user (for troubleshooting)
+      # Print runner user (for diagnostics)
       - name: Print runner user
         run: whoami
 
-      # List NuGet sources (to confirm feeds)
-      - name: List NuGet sources
-        run: C:\Tools\NuGet\nuget.exe sources list
-
-      # Verify write access to TEMP directory
-      - name: Test write access to TEMP directory
-        run: |
-          echo "Power Platform Actions Test" > C:\Temp\testfile.txt
-          dir C:\Temp\testfile.txt
-
-      # Install Power Platform Tools (Microsoft.PowerApps.CLI)
-      - name: Install Power Platform Tools
-        uses: microsoft/powerplatform-actions/actions-install@v1
-
-      # List PAC CLI directory (diagnostic)
-      - name: List PAC CLI directory
-        run: dir C:\Temp\powerplatform-actions-*\Microsoft.PowerApps.CLI.1.43.6\tools
-
-      # Test PAC CLI execution (diagnostic)
-      - name: Test PAC CLI execution
-        run: |
-          $pacDirs = Get-ChildItem -Directory C:\Temp\powerplatform-actions-* | ForEach-Object { $_.FullName }
-          foreach ($dir in $pacDirs) {
-            $pacPath = Join-Path $dir "Microsoft.PowerApps.CLI.1.43.6\tools\pac.exe"
-            if (Test-Path $pacPath) {
-              & $pacPath help
-            }
-          }
+      # Check that PAC CLI is available in PATH
+      - name: Check PAC CLI
+        run: pac help
 
       # Export Solution
       - name: Export Solution
