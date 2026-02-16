@@ -1,44 +1,30 @@
-name: Export and Manage Power Platform Solution
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
 jobs:
   build:
     runs-on: self-hosted
 
     steps:
-      # Install Power Platform CLI via npm (fixes NuGet issues)
-      - name: Install Power Platform CLI via npm
-        run: npm install -g pac
-
-      # Install Power Platform Tools (sets up environment for actions)
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # Export Managed Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
           environment-url: 'https://org82c8d52d.crm.dynamics.com'
           user-name: 'GECSPAdmin@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
-          solution-name: NOA.ReusableComponents.Solution
+          solution-name: 'NOA.ReusableComponents.Solution'
           solution-output-file: 'NOA.ReusableComponents.Solution.zip'
-          working-directory: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out'
+          working-directory: 'out'
+          solution-type: 'Managed'
 
-      # 3. Unpack Managed Solution
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
-          solution-file: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out/NOA.ReusableComponents.Solution.zip'
-          solution-folder: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out/solutions/NOAReusableComponentsSolution'
+          solution-file: 'out/NOA.ReusableComponents.Solution.zip'
+          solution-folder: 'out/solutions/NOA.ReusableComponents.Solution'
           solution-type: 'Managed'
           overwrite-files: true
 
-      # 4. Publish Solution
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
@@ -46,10 +32,9 @@ jobs:
           user-name: 'GECSPAdmin@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
 
-      # 5. Prepare for check-in
       - name: Prepare solution changes for check-in into source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
-          solution-folder: 'C:/Users/tenorioj2428\OneDrive - ARCADIS/Desktop/Github PP/out/solutions/NOAReusableComponentsSolution'
-          solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
+          solution-folder: 'out/solutions/NOA.ReusableComponents.Solution'
+          solution-target-folder: 'src/solutions/NOA.ReusableComponents.Solution'
           token: ${{ secrets.GITHUB_TOKEN }}
