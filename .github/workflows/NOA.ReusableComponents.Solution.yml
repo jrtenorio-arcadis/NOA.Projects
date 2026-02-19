@@ -50,4 +50,4 @@ jobs:
         with:
           solution-folder: 'out/solutions/NOAReusableComponentsSolution'
           solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
