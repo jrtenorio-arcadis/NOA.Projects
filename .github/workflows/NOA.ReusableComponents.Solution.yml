@@ -9,6 +9,17 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - uses: actions/checkout@v3
+
+      - name: Git version
+        run: git --version
+        shell: powershell
+
+      - name: Show git remotes
+        run: git remote -v
+        shell: powershell
+
+    
       # Diagnostic: Print runner user
       - name: Print runner user
         shell: powershell
