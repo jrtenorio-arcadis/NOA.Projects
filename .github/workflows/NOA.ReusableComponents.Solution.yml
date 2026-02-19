@@ -39,11 +39,11 @@ jobs:
             & pac
           }
 
-      # Authenticate to Power Platform Environment (update environment URL as needed)
-      - name: Authenticate to Power Platform Environment
+      # Authenticate to EPS_DEV environment (Unmanaged solutions)
+      - name: Authenticate to Power Platform Environment (EPS_DEV)
         shell: powershell
         run: |
-          pac auth create --environment 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+          pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
       # Export Solution (unmanaged)
       - name: Export Solution
