@@ -3,5 +3,5 @@ on: [push]
 jobs:
   test:
     runs-on: self-hosted
-    steps:
+    steps: 
       - uses: actions/checkout@v3
