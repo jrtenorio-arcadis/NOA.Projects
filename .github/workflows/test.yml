@@ -39,7 +39,7 @@ jobs:
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
-          environment-url: 'https://org160d1bc2.crm.dynamics.com/'
+          environment-url: 'https://org82c8d52d.crm.dynamics.com/'
           user-name: 'sa_svc_eps_intake@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           
