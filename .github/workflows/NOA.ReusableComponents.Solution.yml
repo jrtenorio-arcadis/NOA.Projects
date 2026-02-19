@@ -11,19 +11,33 @@ jobs:
     steps:
       # Diagnostic: Print runner user
       - name: Print runner user
+        shell: pwsh
         run: whoami
 
       # Diagnostic: Show PATH as seen by the runner
       - name: Show PATH
+        shell: pwsh
         run: echo $env:PATH
 
-      # Diagnostic: Show PAC CLI location (where pac)
-      - name: Show PAC CLI location
-        run: where pac
+      # Ensure PAC CLI is available for all steps
+      - name: Add PAC CLI directory to PATH
+        shell: pwsh
+        run: |
+          $env:PATH = "C:\Tools\PowerAppsCLI;" + $env:PATH
+          Write-Output "Updated PATH: $env:PATH"
 
-      # Diagnostic: Show PAC CLI version
-      - name: Check PAC CLI
-        run: pac help
+      # Diagnostic: Show PAC CLI location (PowerShell)
+      - name: Show PAC CLI location
+        shell: pwsh
+        run: |
+          $pac = Get-Command pac -ErrorAction SilentlyContinue
+          if ($null -eq $pac) {
+            Write-Error "PAC CLI not found on PATH."
+            Exit 1
+          } else {
+            Write-Output "PAC CLI found at: $($pac.Source)"
+            & pac --version
+          }
 
       # Install Power Platform Tools (official step)
       - name: Install Power Platform Tools
