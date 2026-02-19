@@ -29,7 +29,7 @@ jobs:
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
-          environment-url: 'https://org160d1bc2.crm.dynamics.com'
+          environment-url: 'https://org160d1bc2.crm.dynamics.com'   # EPS_DEV environment
           user-name: 'sa_svc_eps_intake@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: 'NOAReusableComponentsSolution'
