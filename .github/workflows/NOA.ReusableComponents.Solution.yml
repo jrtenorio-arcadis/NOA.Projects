@@ -4,9 +4,9 @@ on:
       - main
   workflow_dispatch:
 
-jobs: 
+jobs:
   build:
-    runs-on: self-hosted  
+    runs-on: self-hosted
 
     steps:
       # Diagnostic: Print runner user
@@ -39,7 +39,7 @@ jobs:
             & pac
           }
 
-      # Authenticate to Power Platform Environment
+      # Authenticate to Power Platform Environment (update environment URL as needed)
       - name: Authenticate to Power Platform Environment
         shell: powershell
         run: |
