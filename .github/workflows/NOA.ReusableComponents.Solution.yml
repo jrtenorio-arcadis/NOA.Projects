@@ -6,7 +6,7 @@ on:
 
 jobs: 
   build:
-    runs-on: self-hosted
+    runs-on: self-hosted  
 
     steps:
       # Diagnostic: Print runner user
@@ -14,12 +14,12 @@ jobs:
         shell: powershell
         run: whoami
 
-      # Diagnostic: Show PATH as seen by the runner
+      # Diagnostic: Show PATH
       - name: Show PATH
         shell: powershell
         run: echo $env:PATH
 
-      # Ensure PAC CLI is available for all steps
+      # Ensure PAC CLI is available
       - name: Add PAC CLI directory to PATH
         shell: powershell
         run: |
@@ -39,17 +39,13 @@ jobs:
             & pac
           }
 
-      # Authenticate using Service Principal (App Registration)
-      - name: Authenticate to Power Platform Environment (Service Principal)
+      # Authenticate to Power Platform Environment
+      - name: Authenticate to Power Platform Environment
         shell: powershell
         run: |
-          pac auth create `
-            --clientid '${{ secrets.PP_CLIENT_ID }}' `
-            --clientsecret '${{ secrets.PP_CLIENT_SECRET }}' `
-            --tenant '${{ secrets.PP_TENANT_ID }}' `
-            --environment 'https://org82c8d52d.crm.dynamics.com'
+          pac auth create --url 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
-      # Export Solution (managed) - use --path NOT --output
+      # Export Solution (managed) -- THIS IS THE FIXED STEP
       - name: Export Solution
         shell: powershell
         run: |
