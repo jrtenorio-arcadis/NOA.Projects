@@ -39,7 +39,7 @@ jobs:
             & pac
           }
 
-      # Authenticate to EPS_DEV environment (Unmanaged solutions)
+      # Authenticate to EPS_DEV environment
       - name: Authenticate to Power Platform Environment (EPS_DEV)
         shell: powershell
         run: |
@@ -52,12 +52,12 @@ jobs:
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
           pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
 
-      # Unpack Solution (unmanaged)
+      # Unpack Solution (unmanaged) - corrected arguments
       - name: Unpack Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --type Unmanaged --overwrite
+          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --packagetype Unmanaged --clobber
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
