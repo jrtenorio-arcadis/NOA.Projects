@@ -19,52 +19,35 @@ jobs:
         shell: powershell
         run: echo $env:PATH
 
-      # Ensure PAC CLI is available
-      - name: Add PAC CLI directory to PATH
-        shell: powershell
-        run: |
-          $env:PATH = "C:\Tools\PowerAppsCLI;" + $env:PATH
-          Write-Output "Updated PATH: $env:PATH"
+      # Install Power Platform Tools
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # Diagnostic: Show PAC CLI location and version
-      - name: Show PAC CLI location and version
-        shell: powershell
-        run: |
-          $pac = Get-Command pac -ErrorAction SilentlyContinue
-          if ($null -eq $pac) {
-            Write-Error "PAC CLI not found on PATH."
-            Exit 1
-          } else {
-            Write-Output "PAC CLI found at: $($pac.Source)"
-            & pac
-          }
-
-      # Authenticate to EPS_DEV environment
-      - name: Authenticate to Power Platform Environment (EPS_DEV)
-        shell: powershell
-        run: |
-          pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
-
-      # Export Solution (unmanaged) - remove zip if exists!
+      # Export Solution (unmanaged)
       - name: Export Solution
-        shell: powershell
-        run: |
-          if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          if (Test-Path -Path 'out/NOA.ReusableComponents.Solution.zip') {
-              Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
-          }
-          pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
+        uses: microsoft/powerplatform-actions/export-solution@v1
+        with:
+          environment-url: 'https://org160d1bc2.crm.dynamics.com'   # EPS_DEV environment
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-name: 'NOAReusableComponentsSolution'
+          solution-output-file: 'NOA.ReusableComponents.Solution.zip'
+          working-directory: 'out'
+          managed: false
 
       # Unpack Solution (unmanaged)
       - name: Unpack Solution
-        shell: powershell
-        run: |
-          if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --packagetype Unmanaged --clobber
+        uses: microsoft/powerplatform-actions/unpack-solution@v1
+        with:
+          solution-file: 'out/NOA.ReusableComponents.Solution.zip'
+          solution-folder: 'out/solutions/NOAReusableComponentsSolution'
+          solution-type: 'Unmanaged'
+          overwrite-files: true
 
-      # Prepare solution changes for check-in into source control
-      - name: Prepare solution changes for check-in
-        shell: powershell
-        run: |
-          if (!(Test-Path -Path 'src/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'src/solutions/NOAReusableComponentsSolution' }
-          Copy-Item -Path 'out/solutions/NOAReusableComponentsSolution\*' -Destination 'src/solutions/NOAReusableComponentsSolution' -Recurse -Force
+      # Prepare solution changes for check-in (auto commit/push)
+      - name: Prepare solution changes for check-in into source control
+        uses: microsoft/powerplatform-actions/branch-solution@v1
+        with:
+          solution-folder: 'out/solutions/NOAReusableComponentsSolution'
+          solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
+          token: ${{ secrets.GITHUB_TOKEN }}
