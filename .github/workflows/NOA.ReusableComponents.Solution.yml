@@ -4,25 +4,20 @@ on:
       - main
   workflow_dispatch:
 
-jobs: 
+jobs:
   build:
-    runs-on: self-hosted
+    runs-on: windows-latest   # ✅ Use GitHub-hosted runner
 
     steps:
-      # Diagnostic: Print runner user
-      - name: Print runner user
-        shell: powershell
-        run: whoami
+      # 1️⃣ Checkout first
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Diagnostic: Show PATH 
-      - name: Show PATH
-        shell: powershell
-        run: echo $env:PATH
-
-      # Install Power Platform Tools
+      # 2️⃣ Install Power Platform Tools
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
+      # 3️⃣ Remove old solution zip if exists
       - name: Remove old solution zip if exists
         shell: powershell
         run: |
@@ -30,11 +25,11 @@ jobs:
               Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
           }
 
-      # Export Solution (unmanaged)
+      # 4️⃣ Export Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
-          environment-url: 'https://org160d1bc2.crm.dynamics.com'   # EPS_DEV environment
+          environment-url: 'https://org160d1bc2.crm.dynamics.com'
           user-name: 'sa_svc_eps_intake@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: 'NOAReusableComponentsSolution'
@@ -42,7 +37,7 @@ jobs:
           working-directory: 'out'
           managed: false
 
-      # Unpack Solution (unmanaged)
+      # 5️⃣ Unpack Solution
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
@@ -51,13 +46,7 @@ jobs:
           solution-type: 'Unmanaged'
           overwrite-files: true
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      
-      # Prepare solution changes for check-in (auto commit/push)
+      # 6️⃣ Branch Solution
       - name: Branch Solution
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
@@ -67,4 +56,3 @@ jobs:
           branch-name: solution-update
           allow-empty-commit: false
           clobber-branch: false
-
