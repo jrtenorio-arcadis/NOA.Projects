@@ -33,15 +33,18 @@ jobs:
           solution-name: 'POC'
           solution-output-file: 'POC.zip'
           working-directory: 'out'
-          managed: false
+          managed: true
 
 
-      - name: Publish Solution
-        uses: microsoft/powerplatform-actions/publish-solution@v1
+      - name: Import Solution
+        uses: microsoft/powerplatform-actions/import-solution@v1
         with:
-          environment-url: 'https://org82c8d52d.crm.dynamics.com/'
+          environment-url: 'https://org82c8d52d.crm.dynamics.com/'     # Target environment (EPS_DEV or your desired env)
           user-name: 'sa_svc_eps_intake@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-file: 'out/POC.zip'
+          # Optional: set 'async' to true for large solutions
+          # async: false
           
 
       # Unpack Solution
