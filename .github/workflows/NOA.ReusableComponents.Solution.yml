@@ -6,12 +6,12 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted   # ✅ Use GitHub-hosted runner 
+    runs-on: self-hosted  
 
     steps:
       # 1️⃣ Checkout first
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3.1
 
       # 2️⃣ Install Power Platform Tools
       - name: Install Power Platform Tools
