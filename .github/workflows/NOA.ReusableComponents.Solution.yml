@@ -6,7 +6,7 @@ on:
 
 jobs: 
   build:
-    runs-on: self-hosted  
+    runs-on: self-hosted
 
     steps:
       # Diagnostic: Print runner user
@@ -14,12 +14,12 @@ jobs:
         shell: powershell
         run: whoami
 
-      # Diagnostic: Show PATH
+      # Diagnostic: Show PATH as seen by the runner
       - name: Show PATH
         shell: powershell
         run: echo $env:PATH
 
-      # Ensure PAC CLI is available
+      # Ensure PAC CLI is available for all steps
       - name: Add PAC CLI directory to PATH
         shell: powershell
         run: |
@@ -39,41 +39,33 @@ jobs:
             & pac
           }
 
-      # Authenticate to Power Platform Environment
-      - name: Authenticate to Power Platform Environment
+      # Authenticate using Service Principal (App Registration)
+      - name: Authenticate to Power Platform Environment (Service Principal)
         shell: powershell
         run: |
-          pac auth create --url 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+          pac auth create `
+            --clientid '${{ secrets.PP_CLIENT_ID }}' `
+            --clientsecret '${{ secrets.PP_CLIENT_SECRET }}' `
+            --tenant '${{ secrets.PP_TENANT_ID }}' `
+            --environment 'https://org82c8d52d.crm.dynamics.com'
 
-      # Export Solution (managed)
+      # Export Solution (managed) - use --path NOT --output
       - name: Export Solution
         shell: powershell
         run: |
-          # Ensure output directory exists
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          pac solution export --name 'NOA.ReusableComponents.Solution' --output 'out/NOA.ReusableComponents.Solution.zip' --managed
+          pac solution export --name 'NOA.ReusableComponents.Solution' --path 'out/NOA.ReusableComponents.Solution.zip' --managed
 
       # Unpack Solution (managed)
       - name: Unpack Solution
         shell: powershell
         run: |
-          # Ensure unpack output directory exists
           if (!(Test-Path -Path 'out/solutions/NOA.ReusableComponents.Solution')) { New-Item -ItemType Directory -Path 'out/solutions/NOA.ReusableComponents.Solution' }
           pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOA.ReusableComponents.Solution' --type Managed --overwrite
-
-      # Publish Solution (if needed, use PAC CLI or custom scripts)
-      # PAC CLI currently does not have a direct 'publish' command for solutions.
-      # If you need to import the solution back, use pac solution import command.
-      # Example:
-      # - name: Import Solution (Managed)
-      #   shell: powershell
-      #   run: |
-      #     pac solution import --zipfile 'out/NOA.ReusableComponents.Solution.zip' --environment 'https://org82c8d52d.crm.dynamics.com'
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
         run: |
-          # Copy unpacked solution to the target folder for source control
           if (!(Test-Path -Path 'src/solutions/NOA.ReusableComponents.Solution')) { New-Item -ItemType Directory -Path 'src/solutions/NOA.ReusableComponents.Solution' }
           Copy-Item -Path 'out/solutions/NOA.ReusableComponents.Solution\*' -Destination 'src/solutions/NOA.ReusableComponents.Solution' -Recurse -Force
