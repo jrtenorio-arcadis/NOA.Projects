@@ -9,26 +9,22 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # Diagnostic: Print runner user
       - name: Print runner user
-        shell: pwsh
+        shell: powershell
         run: whoami
 
-      # Diagnostic: Show PATH as seen by the runner
       - name: Show PATH
-        shell: pwsh
+        shell: powershell
         run: echo $env:PATH
 
-      # Ensure PAC CLI is available for all steps
       - name: Add PAC CLI directory to PATH
-        shell: pwsh
+        shell: powershell
         run: |
           $env:PATH = "C:\Tools\PowerAppsCLI;" + $env:PATH
           Write-Output "Updated PATH: $env:PATH"
 
-      # Diagnostic: Show PAC CLI location (PowerShell)
       - name: Show PAC CLI location
-        shell: pwsh
+        shell: powershell
         run: |
           $pac = Get-Command pac -ErrorAction SilentlyContinue
           if ($null -eq $pac) {
@@ -39,11 +35,9 @@ jobs:
             & pac --version
           }
 
-      # Install Power Platform Tools (official step)
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # Export Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
@@ -55,7 +49,6 @@ jobs:
           working-directory: 'out'
           managed: true
 
-      # Unpack Solution
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
@@ -64,7 +57,6 @@ jobs:
           solution-type: 'Managed'
           overwrite-files: true
 
-      # Publish Solution
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
@@ -72,7 +64,6 @@ jobs:
           user-name: 'GECSPAdmin@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
 
-      # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in into source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
