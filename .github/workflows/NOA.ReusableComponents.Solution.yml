@@ -45,19 +45,19 @@ jobs:
         run: |
           pac auth create --environment 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
-      # Export Solution (managed) - using correct unique name!
+      # Export Solution (unmanaged)
       - name: Export Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip' --managed
+          pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
 
-      # Unpack Solution (managed)
+      # Unpack Solution (unmanaged)
       - name: Unpack Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --type Managed --overwrite
+          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --type Unmanaged --overwrite
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
