@@ -14,7 +14,7 @@ jobs:
         shell: powershell
         run: whoami
 
-      # Diagnostic: Show PATH
+      # Diagnostic: Show PATH 
       - name: Show PATH
         shell: powershell
         run: echo $env:PATH
