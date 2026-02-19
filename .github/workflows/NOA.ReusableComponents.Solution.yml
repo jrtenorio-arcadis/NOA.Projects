@@ -45,14 +45,17 @@ jobs:
         run: |
           pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
-      # Export Solution (unmanaged)
+      # Export Solution (unmanaged) - remove zip if exists!
       - name: Export Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
+          if (Test-Path -Path 'out/NOA.ReusableComponents.Solution.zip') {
+              Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
+          }
           pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
 
-      # Unpack Solution (unmanaged) - corrected arguments
+      # Unpack Solution (unmanaged)
       - name: Unpack Solution
         shell: powershell
         run: |
