@@ -43,7 +43,7 @@ jobs:
       - name: Authenticate to Power Platform Environment
         shell: powershell
         run: |
-          pac auth create --url 'https://org82c8d52d.crm.dynamics.com' --username 'GECSPAdmin@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+          pac auth create --url 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
       # Export Solution (managed)
       - name: Export Solution
