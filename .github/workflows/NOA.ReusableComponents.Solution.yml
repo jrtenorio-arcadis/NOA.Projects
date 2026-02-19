@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: self-hosted  
-
+ 
     steps:
       # 1️⃣ Checkout first
       - name: Checkout repository
