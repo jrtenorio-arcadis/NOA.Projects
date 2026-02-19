@@ -43,25 +43,25 @@ jobs:
       - name: Authenticate to Power Platform Environment
         shell: powershell
         run: |
-          pac auth create --url 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+          pac auth create --environment 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
       # Export Solution (managed) - using correct unique name!
       - name: Export Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          pac solution export --name 'noaph_noareusablecomponents_ed385' --path 'out/NOA.ReusableComponents.Solution.zip' --managed
+          pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip' --managed
 
       # Unpack Solution (managed)
       - name: Unpack Solution
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'out/solutions/noaph_noareusablecomponents_ed385')) { New-Item -ItemType Directory -Path 'out/solutions/noaph_noareusablecomponents_ed385' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/noaph_noareusablecomponents_ed385' --type Managed --overwrite
+          if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
+          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --type Managed --overwrite
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'src/solutions/noaph_noareusablecomponents_ed385')) { New-Item -ItemType Directory -Path 'src/solutions/noaph_noareusablecomponents_ed385' }
-          Copy-Item -Path 'out/solutions/noaph_noareusablecomponents_ed385\*' -Destination 'src/solutions/noaph_noareusablecomponents_ed385' -Recurse -Force
+          if (!(Test-Path -Path 'src/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'src/solutions/NOAReusableComponentsSolution' }
+          Copy-Item -Path 'out/solutions/NOAReusableComponentsSolution\*' -Destination 'src/solutions/NOAReusableComponentsSolution' -Recurse -Force
