@@ -9,18 +9,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - run: echo "Runner is working!"
-      - uses: actions/checkout@v3
-
-      - name: Git version
-        run: git --version
-        shell: powershell
-
-      - name: Show git remotes
-        run: git remote -v
-        shell: powershell
-
-    
       # Diagnostic: Print runner user
       - name: Print runner user
         shell: powershell
@@ -69,4 +57,4 @@ jobs:
         with:
           solution-folder: 'out/solutions/NOAReusableComponentsSolution'
           solution-target-folder: 'src/solutions/NOAReusableComponentsSolution'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
