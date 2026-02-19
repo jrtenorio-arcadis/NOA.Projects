@@ -45,23 +45,23 @@ jobs:
         run: |
           pac auth create --url 'https://org82c8d52d.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
-      # Export Solution (managed) -- THIS IS THE FIXED STEP
+      # Export Solution (managed) - using correct unique name!
       - name: Export Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          pac solution export --name 'NOA.ReusableComponents.Solution' --path 'out/NOA.ReusableComponents.Solution.zip' --managed
+          pac solution export --name 'noaph_noareusablecomponents_ed385' --path 'out/NOA.ReusableComponents.Solution.zip' --managed
 
       # Unpack Solution (managed)
       - name: Unpack Solution
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'out/solutions/NOA.ReusableComponents.Solution')) { New-Item -ItemType Directory -Path 'out/solutions/NOA.ReusableComponents.Solution' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOA.ReusableComponents.Solution' --type Managed --overwrite
+          if (!(Test-Path -Path 'out/solutions/noaph_noareusablecomponents_ed385')) { New-Item -ItemType Directory -Path 'out/solutions/noaph_noareusablecomponents_ed385' }
+          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/noaph_noareusablecomponents_ed385' --type Managed --overwrite
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'src/solutions/NOA.ReusableComponents.Solution')) { New-Item -ItemType Directory -Path 'src/solutions/NOA.ReusableComponents.Solution' }
-          Copy-Item -Path 'out/solutions/NOA.ReusableComponents.Solution\*' -Destination 'src/solutions/NOA.ReusableComponents.Solution' -Recurse -Force
+          if (!(Test-Path -Path 'src/solutions/noaph_noareusablecomponents_ed385')) { New-Item -ItemType Directory -Path 'src/solutions/noaph_noareusablecomponents_ed385' }
+          Copy-Item -Path 'out/solutions/noaph_noareusablecomponents_ed385\*' -Destination 'src/solutions/noaph_noareusablecomponents_ed385' -Recurse -Force
