@@ -19,17 +19,11 @@ jobs:
         shell: powershell
         run: echo $env:PATH
 
-      # Add Git to PATH (Option 2)
-      - name: Add Git to PATH
-        shell: powershell
-        run: |
-          $env:PATH = "C:\Users\tenorioj2428\AppData\Local\Programs\Git\cmd;" + $env:PATH
-          Write-Output "Updated PATH: $env:PATH"
-
-      # Diagnostic: Check Git installation
+      # Check Git installation
       - name: Check Git installation
         shell: powershell
         run: |
+          $env:PATH = "C:\Users\tenorioj2428\AppData\Local\Programs\Git\cmd;" + $env:PATH
           git --version
           where git
 
@@ -87,6 +81,7 @@ jobs:
       - name: Commit and push solution changes
         shell: powershell
         run: |
+          $env:PATH = "C:\Users\tenorioj2428\AppData\Local\Programs\Git\cmd;" + $env:PATH
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add src/solutions/NOAReusableComponentsSolution
