@@ -68,3 +68,19 @@ jobs:
         run: |
           if (!(Test-Path -Path 'src/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'src/solutions/NOAReusableComponentsSolution' }
           Copy-Item -Path 'out/solutions/NOAReusableComponentsSolution\*' -Destination 'src/solutions/NOAReusableComponentsSolution' -Recurse -Force
+
+      # Commit and push changes
+      - name: Commit and push solution changes
+        shell: powershell
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add src/solutions/POC
+          if (-not (git diff --cached --quiet)) {
+            git commit -m "Automated commit: update POC solution"
+            git push origin HEAD:${{ github.ref_name }}
+          } else {
+            Write-Output "No changes to commit."
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
