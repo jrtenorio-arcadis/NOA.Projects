@@ -41,7 +41,7 @@ jobs:
         with:
           solution-file: 'out/POC.zip'
           solution-folder: 'out/solutions/POC'
-          solution-type: 'Unmanage'
+          solution-type: 'Unmanaged'
           overwrite-files: true
 
       # Unpack Solution
