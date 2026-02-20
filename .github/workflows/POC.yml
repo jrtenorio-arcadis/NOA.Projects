@@ -53,7 +53,7 @@ jobs:
         with:
           solution-file: 'out/POC.zip'
           solution-folder: 'out/solutions/POC'
-          solution-type: 'Unmanaged'
+          solution-type: 'Managed'
           overwrite-files: true
 
 
