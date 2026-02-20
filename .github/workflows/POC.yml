@@ -9,7 +9,8 @@ jobs:
     runs-on: self-hosted  
  
     steps:
-
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       # Install Power Platform Tools
       - name: Install Power Platform Tools
