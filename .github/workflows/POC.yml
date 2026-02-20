@@ -6,17 +6,18 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted  
- 
+    runs-on: windows-latest
+
     steps:
+      # 1️⃣ Checkout repository (required for git operations)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Install Power Platform Tools
+      # 2️⃣ Install Power Platform Tools
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # Remove old solution zip if exists
+      # 3️⃣ Remove old solution zip if exists
       - name: Remove old solution zip if exists
         shell: powershell
         run: |
@@ -24,7 +25,7 @@ jobs:
               Remove-Item -Path 'out/POC.zip' -Force
           }
 
-      # Export Solution
+      # 4️⃣ Export Solution
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
@@ -36,19 +37,16 @@ jobs:
           working-directory: 'out'
           managed: true
 
-
+      # 5️⃣ Import Solution (optional, if you want to move to another environment)
       - name: Import Solution
         uses: microsoft/powerplatform-actions/import-solution@v1
         with:
-          environment-url: 'https://org82c8d52d.crm.dynamics.com/'     # Target environment (EPS_DEV or your desired env)
+          environment-url: 'https://org82c8d52d.crm.dynamics.com/'   # Target environment
           user-name: 'sa_svc_eps_intake@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-file: 'out/POC.zip'
-          # Optional: set 'async' to true for large solutions
-          # async: false
-          
 
-      # Unpack Solution
+      # 6️⃣ Unpack Solution
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
@@ -57,17 +55,11 @@ jobs:
           solution-type: 'Managed'
           overwrite-files: true
 
-      # Prepare solution changes for check-in into source control
-      - name: Prepare solution changes for check-in
-        shell: powershell
-        run: |
-          if (!(Test-Path -Path 'src/solutions/POC')) { New-Item -ItemType Directory -Path 'src/solutions/POC' }
-          Copy-Item -Path 'out/solutions/POC\*' -Destination 'src/solutions/POC' -Recurse -Force
-
-      # check-in into source control
-      - name: Prepare solution changes for check-in into source control
+      # 7️⃣ Commit unpacked solution to source control
+      - name: Commit unpacked solution to source control
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
           solution-folder: 'out/solutions/POC'
           solution-target-folder: 'src/solutions/POC'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          branch-name: 'main'
