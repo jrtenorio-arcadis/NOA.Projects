@@ -10,16 +10,3 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ List files
-      - name: List files
-        run: dir
-
-      # 3️⃣ Download and extract legacy ZIP file (Windows)
-      - name: Download legacy ZIP asset
-        shell: pwsh
-        run: |
-          $url = "https://codeload.github.com/jrtenorio-arcadis/NOA.Projects/legacy.zip/a982a50b1d3b8794dc958eafb6edce18fe785f1c"
-          $out = "NOA.Projects-legacy.zip"
-          Invoke-WebRequest -Uri $url -OutFile $out
-          Expand-Archive -Path $out -DestinationPath NOA.Projects-legacy
-          Get-ChildItem -Path NOA.Projects-legacy -Recurse
