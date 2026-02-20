@@ -19,6 +19,20 @@ jobs:
         shell: powershell
         run: echo $env:PATH
 
+      # Add Git to PATH (Option 2)
+      - name: Add Git to PATH
+        shell: powershell
+        run: |
+          $env:PATH = "C:\Users\tenorioj2428\AppData\Local\Programs\Git\cmd;" + $env:PATH
+          Write-Output "Updated PATH: $env:PATH"
+
+      # Diagnostic: Check Git installation
+      - name: Check Git installation
+        shell: powershell
+        run: |
+          git --version
+          where git
+
       # Ensure PAC CLI is available
       - name: Add PAC CLI directory to PATH
         shell: powershell
@@ -75,9 +89,9 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git add src/solutions/POC
+          git add src/solutions/NOAReusableComponentsSolution
           if (-not (git diff --cached --quiet)) {
-            git commit -m "Automated commit: update POC solution"
+            git commit -m "Automated commit: update NOAReusableComponentsSolution"
             git push origin HEAD:${{ github.ref_name }}
           } else {
             Write-Output "No changes to commit."
