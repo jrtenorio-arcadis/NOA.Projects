@@ -9,3 +9,28 @@ jobs:
       # 1️⃣ Checkout first
       - name: Checkout repository
         uses: actions/checkout@v3
+
+
+      # 2️⃣ Install Power Platform Tools
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      # 3️⃣ Remove old solution zip if exists
+      - name: Remove old solution zip if exists
+        shell: powershell
+        run: |
+          if (Test-Path -Path 'out/NOA.ReusableComponents.Solution.zip') {
+              Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
+          }
+
+      # 4️⃣ Export Solution
+      - name: Export Solution
+        uses: microsoft/powerplatform-actions/export-solution@v1
+        with:
+          environment-url: 'https://org160d1bc2.crm.dynamics.com'   # EPS_DEV environment
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-name: 'NOAReusableComponentsSolution'
+          solution-output-file: 'NOA.ReusableComponents.Solution.zip'
+          working-directory: 'out'
+          managed: true
