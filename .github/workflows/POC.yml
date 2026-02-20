@@ -56,4 +56,10 @@ jobs:
           solution-type: 'Managed'
           overwrite-files: true
 
+          # Prepare solution changes for check-in into source control
+      - name: Prepare solution changes for check-in
+        shell: powershell
+        run: |
+          if (!(Test-Path -Path 'src/solutions/POC')) { New-Item -ItemType Directory -Path 'src/solutions/POC' }
+          Copy-Item -Path 'out/solutions/POC\*' -Destination 'src/solutions/POC' -Recurse -Force
 
