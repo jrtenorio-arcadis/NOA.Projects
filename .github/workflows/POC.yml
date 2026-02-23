@@ -3,65 +3,65 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted  
+    runs-on: self-hosted
 
     steps:
+      # Diagnostic: Print runner user
+      - name: Print runner user
+        shell: powershell
+        run: whoami
 
-      # Install Power Platform Tools
-      - name: Install Power Platform Tools
-        uses: microsoft/powerplatform-actions/actions-install@v1
+      # Diagnostic: Show PATH
+      - name: Show PATH
+        shell: powershell
+        run: echo $env:PATH
 
-      # Remove old solution zip if exists
-      - name: Remove old solution zip if exists
+      # Ensure PAC CLI is available
+      - name: Add PAC CLI directory to PATH
         shell: powershell
         run: |
-          if (Test-Path -Path 'out/POC.zip') {
-              Remove-Item -Path 'out/POC.zip' -Force
+          $env:PATH = "C:\Tools\PowerAppsCLI;" + $env:PATH
+          Write-Output "Updated PATH: $env:PATH"
+
+      # Diagnostic: Show PAC CLI location and version
+      - name: Show PAC CLI location and version
+        shell: powershell
+        run: |
+          $pac = Get-Command pac -ErrorAction SilentlyContinue
+          if ($null -eq $pac) {
+            Write-Error "PAC CLI not found on PATH."
+            Exit 1
+          } else {
+            Write-Output "PAC CLI found at: $($pac.Source)"
+            & pac
           }
 
-      # Export Solution
+      # Authenticate to EPS_DEV environment
+      - name: Authenticate to Power Platform Environment (EPS_DEV)
+        shell: powershell
+        run: |
+          pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+
+      # Export Solution (unmanaged) - remove zip if exists!
       - name: Export Solution
-        uses: microsoft/powerplatform-actions/export-solution@v1
-        with:
-          environment-url: 'https://org160d1bc2.crm.dynamics.com'   # EPS_DEV environment
-          user-name: 'sa_svc_eps_intake@arcadis.com'
-          password-secret: ${{ secrets.NOA_PP_SECRET }}
-          solution-name: 'POC'
-          solution-output-file: 'POC.zip'
-          working-directory: 'out'
-          managed: true
+        shell: powershell
+        run: |
+          if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
+          if (Test-Path -Path 'out/NOA.ReusableComponents.Solution.zip') {
+              Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
+          }
+          pac solution export --name 'NOAReusableComponentsSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
 
-      # Unpack Solution
+      # Unpack Solution (unmanaged)
       - name: Unpack Solution
-        uses: microsoft/powerplatform-actions/unpack-solution@v1
-        with:
-          solution-file: 'out/POC.zip'
-          solution-folder: 'out/solutions/POC'
-          solution-type: 'Managed'
-          overwrite-files: true
-
-      - name: Checkout repository
-        uses: actions/checkout@v3    
+        shell: powershell
+        run: |
+          if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
+          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --packagetype Unmanaged --clobber
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'src/solutions/POC')) { New-Item -ItemType Directory -Path 'src/solutions/POC' }
-          Copy-Item -Path 'out/solutions/POC\*' -Destination 'src/solutions/POC' -Recurse -Force
-
-      # Commit and push changes
-      - name: Commit and push solution changes
-        shell: powershell
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add src/solutions/POC
-          if (-not (git diff --cached --quiet)) {
-            git commit -m "Automated commit: update POC solution"
-            git push origin HEAD:${{ github.ref_name }}
-          } else {
-            Write-Output "No changes to commit."
-          }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          if (!(Test-Path -Path 'src/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'src/solutions/NOAReusableComponentsSolution' }
+          Copy-Item -Path 'out/solutions/NOAReusableComponentsSolution\*' -Destination 'src/solutions/NOAReusableComponentsSolution' -Recurse -Force
