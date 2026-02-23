@@ -40,6 +40,9 @@ jobs:
           solution-type: 'Managed'
           overwrite-files: true
 
+      - name: Checkout repository
+        uses: actions/checkout@v3    
+
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
