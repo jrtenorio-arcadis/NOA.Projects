@@ -1,0 +1,16 @@
+<environmentvariabledefinition schemaname="noaph_NOAPC_SharePointSiteDocuments">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <defaultvalue>61454f17-faac-45c2-9bb5-08af8207fdd7</defaultvalue>
+  <displayname default="NOAPC_SharePointSiteDocuments">
+    <label description="NOAPC_SharePointSiteDocuments" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>noaph_NOAPC_SharePointSiteURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>
