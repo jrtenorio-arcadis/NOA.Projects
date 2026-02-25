@@ -6,8 +6,8 @@ jobs:
 
     runs-on: self-hosted   # alternate runner OS is: ubuntu-latest
     env:
-      TEMP: C:\Temp
-      TMP: C:\Temp
+      TEMP: C:\Users\tenorioj2428\OneDrive - ARCADIS\Documents\PP_Github_Actions
+      TMP: C:\Users\tenorioj2428\OneDrive - ARCADIS\Documents\PP_Github_Actions
 
     steps:
 
