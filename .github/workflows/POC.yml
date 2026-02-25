@@ -84,7 +84,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           branch-name: solution-update
           allow-empty-commit: false
-          clobber-branch: false
+          clobber-branch: true
 
       - name: Revert all Git safe.directory settings
         if: always() # Ensures this runs even if previous steps fail
