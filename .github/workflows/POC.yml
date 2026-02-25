@@ -86,10 +86,9 @@ jobs:
           allow-empty-commit: false
           clobber-branch: false
 
-
-      - name: Revert Git safe directory setting
+      - name: Revert all Git safe.directory settings
         if: always() # Ensures this runs even if previous steps fail
         shell: powershell
         run: |
-          git config --global --unset safe.directory '*'
+          git config --global --unset-all safe.directory
           
