@@ -76,6 +76,25 @@ jobs:
           if (!(Test-Path -Path 'src/solutions/NOAProjectChecklistVariablesSolution')) { New-Item -ItemType Directory -Path 'src/solutions/NOAProjectChecklistVariablesSolution' }
           Copy-Item -Path 'out/solutions/NOAProjectChecklistVariablesSolution\*' -Destination 'src/solutions/NOAProjectChecklistVariablesSolution' -Recurse -Force
 
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Import Solution to Production
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: 'https://org82c8d52d.crm.dynamics.com'
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-file: 'out/solutions/NOAProjectChecklistVariablesSolution.zip'
+
+      - name: Publish Solution in Production
+        uses: microsoft/powerplatform-actions/publish-solution@v1
+        with:
+          environment-url: 'https://org82c8d52d.crm.dynamics.com'
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+      
       - name: Branch Solution
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
