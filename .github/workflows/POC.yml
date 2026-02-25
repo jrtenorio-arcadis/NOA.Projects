@@ -39,12 +39,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # ----- ADDED: Mark Git directory as safe -----
-      - name: Mark git directory as safe
+      # --- Fix GIT dubious ownership by marking all directories as safe ---
+      - name: Mark all directories as safe for Git
         shell: powershell
         run: |
-          git config --global --add safe.directory 'C:/actions-runner/_work/NOA.Projects/NOA.Projects'
-      # ---------------------------------------------
+          git config --global --add safe.directory '*'
+      # -------------------------------------------------------------------
 
       # Authenticate to EPS_DEV environment
       - name: Authenticate to Power Platform Environment (EPS_DEV)
