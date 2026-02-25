@@ -5,39 +5,11 @@ jobs:
   build:
 
     runs-on: self-hosted   # alternate runner OS is: ubuntu-latest
+    env:
+      TEMP: C:\Temp
+      TMP: C:\Temp
+      
     steps:
-
-       #========================= PAC Validation & Installation ===========================
-      # Diagnostic: Print runner user
-      - name: Print runner user
-        shell: powershell
-        run: whoami
-
-      # Diagnostic: Show PATH
-      - name: Show PATH
-        shell: powershell
-        run: echo $env:PATH
-
-      # Ensure PAC CLI is available
-      - name: Add PAC CLI directory to PATH
-        shell: powershell
-        run: |
-          $env:PATH = "C:\Tools\PowerAppsCLI;" + $env:PATH
-          Write-Output "Updated PATH: $env:PATH"
-
-      # Diagnostic: Show PAC CLI location and version
-      - name: Show PAC CLI location and version
-        shell: powershell
-        run: |
-          $pac = Get-Command pac -ErrorAction SilentlyContinue
-          if ($null -eq $pac) {
-            Write-Error "PAC CLI not found on PATH."
-            Exit 1
-          } else {
-            Write-Output "PAC CLI found at: $($pac.Source)"
-            & pac
-          }
-
   
 
       - name: Checkout repository
@@ -46,19 +18,6 @@ jobs:
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-        # Authenticate to EPS_DEV environment
-      - name: Authenticate to Power Platform Environment (EPS_DEV)
-        shell: powershell
-        run: |
-          pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
-
-
-      - name: Test PAC CLI execution
-        run: C:\Tools\PowerAppsCLI\pac.exe help
-        shell: cmd
-
-        #=================================================================================
-  
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
