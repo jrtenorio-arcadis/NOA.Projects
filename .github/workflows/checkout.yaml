@@ -5,6 +5,9 @@ jobs:
   build:
 
     runs-on: self-hosted   # alternate runner OS is: ubuntu-latest
+    env:
+      TEMP: C:\Temp
+      TMP: C:\Temp
 
     steps:
 
