@@ -52,23 +52,27 @@ jobs:
         run: |
           pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
 
-      # Export Solution (unmanaged) - remove zip if exists!
       - name: Export Solution
-        shell: powershell
-        run: |
-          if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          if (Test-Path -Path 'out/NOAProjectChecklistVariablesSolution.zip') {
-              Remove-Item -Path 'out/NOAProjectChecklistVariablesSolution.zip' -Force
-          }
-          pac solution export --name 'NOAProjectChecklistVariablesSolution' --path 'out/NOAProjectChecklistVariablesSolution.zip'
+        uses: microsoft/powerplatform-actions/export-solution@v1
+        with:
+          environment-url: 'https://org160d1bc2.crm.dynamics.com'   # EPS_DEV environment
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-name: 'NOAProjectChecklistVariablesSolution'
+          solution-output-file: 'NOAProjectChecklistVariablesSolution.zip'
+          working-directory: 'out'
+          managed: true
 
-      # Unpack Solution (unmanaged)
+      # 5️⃣ Unpack Solution
       - name: Unpack Solution
-        shell: powershell
-        run: |
-          if (!(Test-Path -Path 'out/solutions/NOAProjectChecklistVariablesSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAProjectChecklistVariablesSolution' }
-          pac solution unpack --zipfile 'out/NOAProjectChecklistVariablesSolution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution' --packagetype Unmanaged --clobber
+        uses: microsoft/powerplatform-actions/unpack-solution@v1
+        with:
+          solution-file: 'out/NOA.ReusableComponents.Solution.zip'
+          solution-folder: 'out/NOAProjectChecklistVariablesSolution'
+          solution-type: 'Manage'
+          overwrite-files: true
 
+      
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
