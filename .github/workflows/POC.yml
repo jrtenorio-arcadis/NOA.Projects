@@ -36,6 +36,10 @@ jobs:
             & pac
           }
 
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       # Authenticate to EPS_DEV environment
       - name: Authenticate to Power Platform Environment (EPS_DEV)
         shell: powershell
@@ -58,9 +62,6 @@ jobs:
         run: |
           if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
           pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --packagetype Unmanaged --clobber
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
       
       # Prepare solution changes for check-in into source control
