@@ -86,6 +86,23 @@ jobs:
           allow-empty-commit: false
           clobber-branch: true
 
+
+      - name: Import Solution to test
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: 'https://org82c8d52d.crm.dynamics.com'
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-file: 'out/solutions/NOAProjectChecklistVariablesSolution.zip'
+
+      - name: Publish Solution in test
+        uses: microsoft/powerplatform-actions/publish-solution@v1
+        with:
+          environment-url: 'https://org82c8d52d.crm.dynamics.com'
+          user-name: 'sa_svc_eps_intake@arcadis.com'
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          
+
       - name: Revert all Git safe.directory settings
         if: always() # Ensures this runs even if previous steps fail
         shell: powershell
