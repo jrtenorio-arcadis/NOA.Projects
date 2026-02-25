@@ -1,0 +1,49 @@
+name: Export Power Platform Solution (Username/Password)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Export Solution
+        uses: microsoft/powerplatform-actions/export-solution@v1
+        with:
+          environment-url: https://org160d1bc2.crm.dynamics.com
+          user-name: sa_svc_eps_intake@arcadis.com
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-name: NOAProjectChecklistVariablesSolution
+          solution-output-file: out/NOAProjectChecklistVariablesSolution.zip
+          managed: false
+          overwrite: true
+
+      - name: Unpack Solution
+        uses: microsoft/powerplatform-actions/unpack-solution@v1
+        with:
+          solution-file: out/NOAProjectChecklistVariablesSolution.zip
+          solution-folder: src/solutions/NOAProjectChecklistVariablesSolution
+          solution-type: Unmanaged
+          overwrite-files: true
+
+      - name: Publish Solution
+        uses: microsoft/powerplatform-actions/publish-solution@v1
+        with:
+          environment-url: https://org160d1bc2.crm.dynamics.com
+          user-name: sa_svc_eps_intake@arcadis.com
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Automated solution export"
+          git push
