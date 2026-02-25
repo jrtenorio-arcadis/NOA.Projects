@@ -82,10 +82,13 @@ jobs:
           solution-folder: out/solutions/NOAProjectChecklistVariablesSolution
           solution-target-folder: src/solutions/NOAProjectChecklistVariablesSolution
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          branch-name: solution-update
+          branch-name: Branch-NOAProjectChecklistVariablesSolution
           allow-empty-commit: false
           clobber-branch: true
 
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
 
       - name: Import Solution to test
         uses: microsoft/powerplatform-actions/import-solution@v1
