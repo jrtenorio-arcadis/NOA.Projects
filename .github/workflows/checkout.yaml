@@ -55,6 +55,13 @@ jobs:
           solution-name: NOAProjectChecklistVariablesSolution
           solution-output-file: 'NOAProjectChecklistVariablesSolution.zip'
           working-directory: 'out'
+          managed: false
+          run-asynchronously: false
+          cloud: Public
+          overwrite: false
+        env:
+          POWERPLATFORMTOOLS_PACINSTALLED: true
+          POWERPLATFORMTOOLS_PACPATH: C:\Tools\PowerAppsCLI\pac.exe
   
       - name: Unpack Solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
