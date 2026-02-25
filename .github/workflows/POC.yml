@@ -36,9 +36,15 @@ jobs:
             & pac
           }
 
-
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      # ----- ADDED: Mark Git directory as safe -----
+      - name: Mark git directory as safe
+        shell: powershell
+        run: |
+          git config --global --add safe.directory 'C:/actions-runner/_work/NOA.Projects/NOA.Projects'
+      # ---------------------------------------------
 
       # Authenticate to EPS_DEV environment
       - name: Authenticate to Power Platform Environment (EPS_DEV)
@@ -63,7 +69,6 @@ jobs:
           if (!(Test-Path -Path 'out/solutions/NOAReusableComponentsSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAReusableComponentsSolution' }
           pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAReusableComponentsSolution' --packagetype Unmanaged --clobber
 
-      
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
