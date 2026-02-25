@@ -86,7 +86,7 @@ jobs:
           environment-url: 'https://org82c8d52d.crm.dynamics.com'
           user-name: 'sa_svc_eps_intake@arcadis.com'
           password-secret: ${{ secrets.NOA_PP_SECRET }}
-          solution-file: 'out/solutions/NOAProjectChecklistVariablesSolution.zip'
+          solution-file: 'out/NOAProjectChecklistVariablesSolution.zip'
 
       - name: Publish Solution in Production
         uses: microsoft/powerplatform-actions/publish-solution@v1
