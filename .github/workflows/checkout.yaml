@@ -38,6 +38,8 @@ jobs:
             & pac
           }
 
+  
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -49,6 +51,11 @@ jobs:
         shell: powershell
         run: |
           pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+
+
+      - name: Test PAC CLI execution
+        run: C:\Tools\PowerAppsCLI\pac.exe help
+        shell: cmd
 
         #=================================================================================
   
