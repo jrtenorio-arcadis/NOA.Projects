@@ -57,7 +57,7 @@ jobs:
 
 
 
-      - name: Export Solution (managed)
+      - name: Export Solution (Managed)
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
@@ -66,13 +66,12 @@ jobs:
           }
           pac solution export --name 'NOAProjectChecklistVariablesSolution' --path 'out/NOAProjectChecklistVariablesSolution.zip' --managed             
 
-      # Unpack Solution (unmanaged)
-      - name: Unpack Solution
+      # Unpack Solution (managed)
+      - name: Unpack Solution (Managed)
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out/solutions/NOAProjectChecklistVariablesSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAProjectChecklistVariablesSolution' }
-          pac solution unpack --zipfile 'out/NOAProjectChecklistVariablesSolution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution' --packagetype Unmanaged --clobber
-   
+          pac solution unpack --zipfile 'out/NOAProjectChecklistVariablesSolution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution' --packagetype Managed --clobber
 
       
       # Prepare solution changes for check-in into source control
