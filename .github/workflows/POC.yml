@@ -60,27 +60,27 @@ jobs:
           if (Test-Path -Path 'out/NOA.ReusableComponents.Solution.zip') {
               Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
           }
-          pac solution export --name 'NOAProjectChecklistVariablesSolution ' --path 'out/NOA.ReusableComponents.Solution.zip'
+          pac solution export --name 'NOAProjectChecklistVariablesSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
 
       # Unpack Solution (unmanaged)
       - name: Unpack Solution
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'out/solutions/NOAProjectChecklistVariablesSolution ')) { New-Item -ItemType Directory -Path 'out/solutions/NOAProjectChecklistVariablesSolution ' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution ' --packagetype Unmanaged --clobber
+          if (!(Test-Path -Path 'out/solutions/NOAProjectChecklistVariablesSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAProjectChecklistVariablesSolution' }
+          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution' --packagetype Unmanaged --clobber
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
         shell: powershell
         run: |
-          if (!(Test-Path -Path 'src/solutions/NOAProjectChecklistVariablesSolution ')) { New-Item -ItemType Directory -Path 'src/solutions/NOAProjectChecklistVariablesSolution ' }
-          Copy-Item -Path 'out/solutions/NOAProjectChecklistVariablesSolution \*' -Destination 'src/solutions/NOAProjectChecklistVariablesSolution ' -Recurse -Force
+          if (!(Test-Path -Path 'src/solutions/NOAProjectChecklistVariablesSolution')) { New-Item -ItemType Directory -Path 'src/solutions/NOAProjectChecklistVariablesSolution' }
+          Copy-Item -Path 'out/solutions/NOAProjectChecklistVariablesSolution\*' -Destination 'src/solutions/NOAProjectChecklistVariablesSolution' -Recurse -Force
 
       - name: Branch Solution
         uses: microsoft/powerplatform-actions/branch-solution@v1
         with:
-          solution-folder: out/solutions/NOAProjectChecklistVariablesSolution 
-          solution-target-folder: src/solutions/NOAProjectChecklistVariablesSolution 
+          solution-folder: out/solutions/NOAProjectChecklistVariablesSolution
+          solution-target-folder: src/solutions/NOAProjectChecklistVariablesSolution
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           branch-name: solution-update
           allow-empty-commit: false
