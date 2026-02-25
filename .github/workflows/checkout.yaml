@@ -5,14 +5,14 @@ jobs:
   build:
 
     runs-on: self-hosted   # alternate runner OS is: ubuntu-latest
-    env:
-      TEMP: C:\Users\tenorioj2428\OneDrive - ARCADIS\Documents\PP_Github_Actions
-      TMP: C:\Users\tenorioj2428\OneDrive - ARCADIS\Documents\PP_Github_Actions
-
     steps:
 
-    - name: Install Power Platform Tools
-      uses: microsoft/powerplatform-actions/actions-install@v1
+    - name: Add PAC CLI directory to PATH
+      shell: powershell
+      run: |
+          $env:PATH = "C:\Tools\PowerAppsCLI;" + $env:PATH
+          Write-Output "Updated PATH: $env:PATH"
+
 
     - name: Checkout repository
       uses: actions/checkout@v3
