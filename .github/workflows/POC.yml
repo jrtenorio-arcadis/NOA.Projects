@@ -57,17 +57,17 @@ jobs:
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out')) { New-Item -ItemType Directory -Path 'out' }
-          if (Test-Path -Path 'out/NOA.ReusableComponents.Solution.zip') {
-              Remove-Item -Path 'out/NOA.ReusableComponents.Solution.zip' -Force
+          if (Test-Path -Path 'out/NOAProjectChecklistVariablesSolution.zip') {
+              Remove-Item -Path 'out/NOAProjectChecklistVariablesSolution.zip' -Force
           }
-          pac solution export --name 'NOAProjectChecklistVariablesSolution' --path 'out/NOA.ReusableComponents.Solution.zip'
+          pac solution export --name 'NOAProjectChecklistVariablesSolution' --path 'out/NOAProjectChecklistVariablesSolution.zip'
 
       # Unpack Solution (unmanaged)
       - name: Unpack Solution
         shell: powershell
         run: |
           if (!(Test-Path -Path 'out/solutions/NOAProjectChecklistVariablesSolution')) { New-Item -ItemType Directory -Path 'out/solutions/NOAProjectChecklistVariablesSolution' }
-          pac solution unpack --zipfile 'out/NOA.ReusableComponents.Solution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution' --packagetype Unmanaged --clobber
+          pac solution unpack --zipfile 'out/NOAProjectChecklistVariablesSolution.zip' --folder 'out/solutions/NOAProjectChecklistVariablesSolution' --packagetype Unmanaged --clobber
 
       # Prepare solution changes for check-in into source control
       - name: Prepare solution changes for check-in
