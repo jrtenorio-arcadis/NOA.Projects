@@ -44,6 +44,12 @@ jobs:
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
+        # Authenticate to EPS_DEV environment
+      - name: Authenticate to Power Platform Environment (EPS_DEV)
+        shell: powershell
+        run: |
+          pac auth create --environment 'https://org160d1bc2.crm.dynamics.com' --username 'sa_svc_eps_intake@arcadis.com' --password '${{ secrets.NOA_PP_SECRET }}'
+
         #=================================================================================
   
       - name: Export Solution
