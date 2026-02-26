@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  EPS_DEV - Export and Upload To Repository:
+  EPS_DEV Export and Upload To Repository:
     runs-on: windows-latest
 
     steps:
