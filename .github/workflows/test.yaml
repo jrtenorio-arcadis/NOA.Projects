@@ -22,7 +22,7 @@ jobs:
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: NOAProjectChecklistVariablesSolution
           solution-output-file: out/NOAProjectChecklistVariablesSolution.zip
-          managed: false
+          managed: true
           overwrite: true
 
       - name: Unpack Solution
@@ -30,7 +30,7 @@ jobs:
         with:
           solution-file: out/NOAProjectChecklistVariablesSolution.zip
           solution-folder: src/solutions/NOAProjectChecklistVariablesSolution
-          solution-type: Unmanaged
+          solution-type: Managed
           overwrite-files: true
 
       - name: Publish Solution
