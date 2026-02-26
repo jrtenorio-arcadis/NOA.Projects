@@ -47,3 +47,22 @@ jobs:
           git add .
           git diff --quiet && git diff --staged --quiet || git commit -m "Automated solution export"
           git push
+
+
+      # NEW STEP: Import to EPS_TEST with Environment Variable Override
+      - name: Import Solution to EPS_TEST
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{ secrets.NOA_PP_EPS_TEST }}
+          user-name: ${{ secrets.NOA_PP_EPS_DEV }}
+          password-secret: ${{ secrets.NOA_PP_SECRET }}
+          solution-file: out/NOAProjectChecklistVariablesSolution.zip
+          force-overwrite: true
+          publish-workflows: true
+          environment-variables: |
+            [
+              {
+                "schemaName": "noaph_NOAPC_SharePointSiteURL",
+                "value": "https://arcadiso365.sharepoint.com/sites/GeneratedFilesWorkspaceDev"
+              }
+            ]
