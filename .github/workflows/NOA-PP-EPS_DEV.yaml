@@ -17,8 +17,8 @@ jobs:
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
-          environment-url: https://org160d1bc2.crm.dynamics.com
-          user-name: sa_svc_eps_intake@arcadis.com
+          environment-url: ${{ secrets.NOA_PP_EPS_DEV }}
+          user-name: ${{ secrets.NOA_PP_EMAIL }}
           password-secret: ${{ secrets.NOA_PP_SECRET }}
           solution-name: NOAProjectChecklistVariablesSolution
           solution-output-file: out/NOAProjectChecklistVariablesSolution.zip
@@ -36,8 +36,8 @@ jobs:
       - name: Publish Solution
         uses: microsoft/powerplatform-actions/publish-solution@v1
         with:
-          environment-url: https://org160d1bc2.crm.dynamics.com
-          user-name: sa_svc_eps_intake@arcadis.com
+          environment-url: ${{ secrets.NOA_PP_EPS_DEV }}
+          user-name: ${{ secrets.NOA_PP_EMAIL }}
           password-secret: ${{ secrets.NOA_PP_SECRET }}
 
       - name: Commit changes
